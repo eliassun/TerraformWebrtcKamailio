@@ -1,0 +1,7 @@
+
+wget http://deb.kamailio.org/kamailiodebkey.gpg
+sudo apt-key add kamailiodebkey.gpg
+sudo vim /etc/apt/source.list
+
+
+sudo apt-get install vim kamailio kamailio-mysql-modules kamailio-websocket-modules

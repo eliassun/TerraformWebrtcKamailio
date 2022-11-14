@@ -1,0 +1,90 @@
+vim /etc/rtpengine/rtpengine.sample.conf
+[rtpengine]
+table = -1
+# no-fallback = false
+### for userspace forwarding only:
+# table = -1
+
+### a single interface:
+# interface = 123.234.345.456
+### separate multiple interfaces with semicolons:
+# interface = internal/12.23.34.45;external/23.34.45.54
+### for different advertised address:
+interface = your public ip
+
+listen-ng = 127.0.0.1:2223
+#listen-tcp = 8880
+#listen-udp = 5060
+
+### interface for HTTP, WS and Prometheus
+# listen-http = 9101
+
+timeout = 60
+silent-timeout = 3600
+tos = 184
+#control-tos = 184
+# delete-delay = 30
+# final-timeout = 10800
+
+# foreground = false
+# pidfile = /run/ngcp-rtpengine-daemon.pid
+# num-threads = 16
+
+port-min = 30000
+port-max = 60000
+# max-sessions = 5000
+
+# recording-dir = /var/spool/rtpengine
+# recording-method = proc
+# recording-format = raw
+
+# redis = 127.0.0.1:6379/5
+# redis-write = password@12.23.34.45:6379/42
+# redis-num-threads = 8
+# no-redis-required = false
+# redis-expires = 86400
+# redis-allowed-errors = -1
+# redis-disable-time = 10
+# redis-cmd-timeout = 0
+# redis-connect-timeout = 1000
+
+b2b-url = http://127.0.0.1:8090/
+# xmlrpc-format = 0
+
+# 6 为 debug 具体请参照官网
+log-level = 6
+# log-stderr = false
+# 系统日志匹配前缀
+log-facility = local5
+# log-facility-cdr = local0
+# log-facility-rtcp = local1
+
+# graphite = 127.0.0.1:9006
+# graphite-interval = 60
+# graphite-prefix = foobar.
+
+# homer = 123.234.345.456:65432
+# homer-protocol = udp
+# homer-id = 2001
+
+# sip-source = false
+# dtls-passive = false
+
+[rtpengine-testing]
+table = -1
+interface = 这里换成你的公网IP
+listen-ng = 2223
+foreground = true
+log-stderr = true
+log-level = 7
+
+# 配置日志
+vim /etc/rsyslog.conf
+# 在该文件的结尾添加如下代码
+local5.* -/var/log/rtpengine.log
+systemctl restart rsyslog #重启日志服务
+tail -f /var/log/rtpengine.log #实时输出日志
+
+rtpengine --config-file=/etc/rtpengine/rtpengine.sample.conf
+# 配置好后，需要重启一下  kamailio
+systemctl restart kamailio.service
